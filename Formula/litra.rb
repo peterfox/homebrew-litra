@@ -1,8 +1,8 @@
 class Litra < Formula
   desc "a small Logitech Litra Glow control application"
   homepage "https://github.com/peterfox/litra"
-  url "https://github.com/peterfox/litra/releases/download/v0.2.0/litra-macos-amd64.tar.gz"
-  sha256 "6aeb5606d922ae3f63f458e7410c18693214746f3283aafa9813e11519df9aec"
+  url "https://github.com/peterfox/litra/releases/download/v0.3.0/litra-macos-amd64.tar.gz"
+  sha256 "253e43d3d26be2417ab46a3217a508805c70605ebcc946495908cfb856fb334b"
 
   def install
     bin.install "litra"
