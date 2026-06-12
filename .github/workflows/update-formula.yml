@@ -22,11 +22,11 @@ jobs:
           VERSION="${TAG#v}"
           URL=$(echo "$RESPONSE" | jq -r '
             .assets[]
-            | select(.name | test("(macos|darwin).*(amd64|x86_64).*\\.tar\\.gz"; "i"))
+            | select(.name | test("(macos|darwin).*\\.tar\\.gz$"; "i"))
             | .browser_download_url
           ' | head -1)
           if [ -z "$URL" ]; then
-            echo "::error::No macOS amd64 .tar.gz asset found in release $TAG"
+            echo "::error::No macOS .tar.gz asset found in release $TAG"
             exit 1
           fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
