@@ -20,7 +20,15 @@ jobs:
             -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}")
           TAG=$(echo "$RESPONSE" | jq -r '.tag_name')
           VERSION="${TAG#v}"
-          URL="https://github.com/peterfox/litra/releases/download/${TAG}/litra-macos-amd64.tar.gz"
+          URL=$(echo "$RESPONSE" | jq -r '
+            .assets[]
+            | select(.name | test("(macos|darwin).*(amd64|x86_64).*\\.tar\\.gz"; "i"))
+            | .browser_download_url
+          ' | head -1)
+          if [ -z "$URL" ]; then
+            echo "::error::No macOS amd64 .tar.gz asset found in release $TAG"
+            exit 1
+          fi
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
           echo "url=$URL" >> "$GITHUB_OUTPUT"
@@ -28,7 +36,7 @@ jobs:
       - name: Check if update is needed
         id: check
         run: |
-          CURRENT=$(grep -oP '(?<=/v)[\d.]+(?=/litra-macos)' Formula/litra.rb)
+          CURRENT=$(grep -oP '(?<=/v)[\d.]+(?=/)' Formula/litra.rb | head -1)
           echo "current=$CURRENT"
           echo "latest=${{ steps.release.outputs.version }}"
           if [ "$CURRENT" = "${{ steps.release.outputs.version }}" ]; then
